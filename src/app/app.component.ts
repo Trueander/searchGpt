@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import {Configuration, OpenAIApi} from "openai";
+
+const TEXT_POR_DEFECTO = 'Retorname una lista de 5 items enumerada así: 1. "posible descripción" - "https://www.url.com". sobre ';
 
 export class ResponseGpt {
   link!: string;
@@ -15,63 +18,74 @@ export class ResponseGpt {
 export class AppComponent {
   title = 'buscadorGPT';
 
-  response: any;
-  promptText: string = '';
-  defaultText: string = 'Retorname una lista de 5 items enumerada así: 1. "posible descripción" - "www.posibleUrl.com". al buscar un texto ';
+  respuesta: string | undefined;
 
   chatGptResponse: ResponseGpt[] = [];
 
-  checkResponse() {
-    this.invokeGPT();
+  formulario: FormGroup = new FormGroup({
+    textoInput: new FormControl('')
+  })
+
+  cargando: boolean = false;
+
+  buscar() {
+    this.invokarGpt();
   }
 
-  async invokeGPT() {
-    if (this.promptText.length < 2) {
-      return;
-    }
+  async invokarGpt() {
+    let textoInput = this.formulario.get('textoInput')?.value;
+
+    this.cargando = true;
   
-    this.promptText = this.defaultText + this.promptText;
+    let textoCombinado = TEXT_POR_DEFECTO + textoInput;
   
     try {
-      this.response = undefined;
+      this.respuesta = undefined;
       let configuration = new Configuration({
-        apiKey: "APIkey",
+        apiKey: "APYKEY",
       });
       let openai = new OpenAIApi(configuration);
   
       let requestData = {
         model: "text-davinci-003",
-        prompt: this.promptText,
-        temperature: 0.95,
+        prompt: textoCombinado,
+        temperature: 0,
         max_tokens: 400,
         top_p: 1.0,
         frequency_penalty: 0.0,
         presence_penalty: 0.0,
       };
+
       let apiResponse = await openai.createCompletion(requestData);
-      
-      this.response = apiResponse.data;
-      this.chatGptResponse = this.parseResponse(this.response.choices[0].text);
+      this.respuesta = apiResponse.data.choices[0].text;
+
+      if(!this.respuesta){
+        return
+      }
+
+      this.chatGptResponse = this.convertirRespuestaToLista(this.respuesta);
+      this.cargando = false;
     } catch (error:any) {
       console.error(error);
+      this.cargando = false;
     }
   }
 
 
-  parseResponse(text: string): ResponseGpt[] {
-    const responseList: ResponseGpt[] = [];
+  convertirRespuestaToLista(texto: string): ResponseGpt[] {
+    const listaRespuesta: ResponseGpt[] = [];
     const regex = /\"(.+?)\"\s-\s\"(.+?)\"/g;
-    let matches;
-    while ((matches = regex.exec(text)) !== null) {
+    let coincidencias;
+    while ((coincidencias = regex.exec(texto)) !== null) {
       const response = new ResponseGpt();
-      response.description = matches[1];
-      response.link = matches[2];
-      responseList.push(response);
-      if (responseList.length === 5) {
+      response.description = coincidencias[1];
+      response.link = coincidencias[2];
+      listaRespuesta.push(response);
+      if (listaRespuesta.length === 5) {
         break;
       }
     }
-    return responseList;
+    return listaRespuesta;
   }
 
 }

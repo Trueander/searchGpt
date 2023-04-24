@@ -1,32 +1,25 @@
 .container {
     padding: 20px;
-    width: 40rem;
+    width: 35rem;
     margin: auto;
     max-width: 95vw;
 }
 
-.input-wrapper {
+h1 {
+    text-align: center;
+    margin-top: 6px;
+}
+
+mat-form-field {
     width: 100%;
 }
 
-.input-wrapper input {
+input {
     width: 100%;
-    background: #fffcfc;
-    padding: 7px 15px;
-    height: 40px;
-    border-radius: 25px;
-    border: none;
-    box-shadow: 0 0.2rem 0.5rem 0 rgba(0, 0, 0, 0.25),
-        0 0.05rem 1rem -0.95rem rgb(0, 0, 0, 0.5);
-}
-
-input:focus {
-          outline: none;
 }
 
 .result-wrapper {
     width: 100%;
-
 }
 
 .result-wrapper .item-result {
@@ -41,6 +34,7 @@ input:focus {
 .link {
     width: 100%;
     margin-bottom: 10px;
+    font-size: 12px;
 }
 
 .link-description {
@@ -48,5 +42,5 @@ input:focus {
 }
 
 .result-text {
-    margin: 20px 0;
+    margin: 0 0 20px 0;
 }
