@@ -1,44 +1,42 @@
-<div class="container">
-  <div style="display: flex; justify-content: center;">
-    <h1 >Búsqueda GPT</h1>
-    <img style="margin-bottom: 25px;" width="80px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK48hBYesw6guvCLZnoEDAdKzAoGIMShPKfzvUdFu7&s" alt="">
+
+
+  <div style="display: flex; justify-content: center; margin-top: 40px;">
+    <h1 >Asistente contable GPT</h1>
+    <img style="margin-bottom: 25px; margin-left: 20px;" width="40px" src="../assets/contador.png" alt="">
     
   </div>
-  <div class="input-wrapper">
-    <form [formGroup]="formulario" (ngSubmit)="buscar()" novalidate>
-      <mat-form-field appearance="outline">
-        <mat-label>Escriba algo para buscar</mat-label>
-        <input matInput type="text" formControlName="textoInput">
-        <button matSuffix mat-icon-button >
-          <mat-icon matSuffix>search</mat-icon>
-        </button>
-        
-      </mat-form-field>
-    </form>
-
-  </div>
-  <div *ngIf="cargando">
-    <mat-spinner style="width: 100px; margin: auto;"></mat-spinner>
-  </div>
-  <div class="result-text" *ngIf="chatGptResponse.length > 0 && !cargando">
-    <h5>Resultados encontrados: {{chatGptResponse.length}}</h5>
-  </div>
-  <div class="result-wrapper" *ngIf="chatGptResponse.length > 0 && !cargando">
-    <div class="item-result" *ngFor="let item of chatGptResponse">
-      <div class="link"><a target="_blank" [href]="item.link">{{item.link}}</a></div>
-      <div class="link-description">{{item.description}}</div>
+  <div class="chat-container">
+    <div *ngIf="preguntasPreguntas.length > 0" class="container-respuestas">
+      <div class="container" *ngFor="let item of preguntasPreguntas" [ngClass]="item.user === 'Asistente virtual' ? 'darker' : ''">
+        <div>
+          <h4 style="font-weight: 600;">{{item.user}}</h4>
+        </div>
+        <div>
+          <p>{{item.texto}}</p>
+        </div>
+      </div>
     </div>
-
-    <mat-accordion *ngFor="let item of chatGptResponse">
-      <mat-expansion-panel hideToggle>
-        <div class="link"><a [href]="item.link">{{item.link}}</a></div>
-        <div class="link-description">{{item.description}}</div>
-      </mat-expansion-panel>
-    </mat-accordion>
-
+    <div *ngIf="preguntasPreguntas.length == 0" class="bienvenida">
+      <h1>Bienvenido al asistente virtual contable</h1>
+      <p>Puedo responder preguntas relacionadas a la contabilidad</p>
+    </div>
+    <div class="botones">
+      <span>Haz clic en el botón para iniciar una conversación</span>
+      <div>
+        <button class="btn" (click)="startService()" *ngIf="!botonVoiceActivo">
+          Empezar
+         </button>
+        <button class="btn" style="display: flex;" (click)="stopService()" *ngIf="botonVoiceActivo" [disabled]="cargando">
+          <span *ngIf="cargando" >Cargando</span>
+          <span *ngIf="!cargando" >Enviar</span>
+          <mat-spinner *ngIf="cargando" style="width: 15px; height: 15px; color: #fff; display: flex;"></mat-spinner></button>
+      </div>
+    </div>
   </div>
-  <div *ngIf="chatGptResponse.length === 0 && !cargando" style="width: 100%;">
-    <img style="margin: auto; width: 100%;" src="../assets/imagen.png" >
+
+  
+
+  <div>
+   
   </div>
-</div>
 
