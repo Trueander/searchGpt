@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import {Configuration, OpenAIApi} from "openai";
 import { Observable, finalize } from 'rxjs';
 
@@ -22,6 +23,10 @@ export class AppComponent {
   cargando: boolean = false;
 
   textoNuevo: string = '';
+
+  textoFormGroup: FormGroup = new FormGroup({
+    textoForm: new FormControl('')
+  })
 
   recognition = new webkitSpeechRecognition();
   isStoppedSpeechRecog = false;
@@ -86,6 +91,18 @@ export class AppComponent {
     this.tempWords = '';
   }
 
+  enviarTexto() {
+    this.preguntasPreguntas.push({user: 'Tú', texto: this.textoFormGroup.get('textoForm')?.value});
+    this.getOpenAIResponse(TEXT_POR_DEFECTO + this.textoFormGroup.get('textoForm')?.value)
+    .pipe(finalize(() => {
+      this.cargando = false;
+    }))
+    .subscribe(response => {
+      this.preguntasPreguntas.push({user: 'Asistente virtual', texto: response});
+      this.cargarVoz(response);
+    });
+  }
+
   cargarVoz(texto: string) {
 
     if (!this.hablando) {
@@ -134,7 +151,7 @@ export class AppComponent {
   getOpenAIResponse(texto: string): Observable<string> {
     return new Observable((observer) => {
       let configuration = new Configuration({
-        apiKey: "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",
+        apiKey: "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",
       });
       let openai = new OpenAIApi(configuration);
   

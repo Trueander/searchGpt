@@ -5,34 +5,42 @@
     <img style="margin-bottom: 25px; margin-left: 20px;" width="40px" src="../assets/contador.png" alt="">
     
   </div>
-  <div class="chat-container">
-    <div *ngIf="preguntasPreguntas.length > 0" class="container-respuestas">
-      <div class="container" *ngFor="let item of preguntasPreguntas" [ngClass]="item.user === 'Asistente virtual' ? 'darker' : ''">
-        <div>
-          <h4 style="font-weight: 600;">{{item.user}}</h4>
-        </div>
-        <div>
-          <p>{{item.texto}}</p>
+  <form [formGroup]="textoFormGroup" (ngSubmit)="enviarTexto()">
+    <div class="chat-container">
+      <div *ngIf="preguntasPreguntas.length > 0" class="container-respuestas">
+        <div class="container" *ngFor="let item of preguntasPreguntas" [ngClass]="item.user === 'Asistente virtual' ? 'darker' : ''">
+          <div>
+            <h4 style="font-weight: 600;">{{item.user}}</h4>
+          </div>
+          <div>
+            <p>{{item.texto}}</p>
+          </div>
         </div>
       </div>
-    </div>
-    <div *ngIf="preguntasPreguntas.length == 0" class="bienvenida">
-      <h1>Bienvenido al asistente virtual contable</h1>
-      <p>Puedo responder preguntas relacionadas a la contabilidad</p>
-    </div>
-    <div class="botones">
-      <span>Haz clic en el botón para iniciar una conversación</span>
-      <div>
-        <button class="btn" (click)="startService()" *ngIf="!botonVoiceActivo">
-          Empezar
+      <div *ngIf="preguntasPreguntas.length == 0" class="bienvenida">
+        <h1>Bienvenido al asistente virtual contable</h1>
+        <p>Puedo responder preguntas relacionadas a la contabilidad</p>
+      </div>
+      <div class="botones">
+        <input type="text" placeholder="Ingrese un texto para inicar la conversación" formControlName="textoForm">
+        <button class="btn" style="margin-right: 10px;" type="submit" >
+          Chat
          </button>
-        <button class="btn" style="display: flex;" (click)="stopService()" *ngIf="botonVoiceActivo" [disabled]="cargando">
-          <span *ngIf="cargando" >Cargando</span>
-          <span *ngIf="!cargando" >Enviar</span>
-          <mat-spinner *ngIf="cargando" style="width: 15px; height: 15px; color: #fff; display: flex;"></mat-spinner></button>
+        <div>
+
+
+          <button class="btn" (click)="startService()" *ngIf="!botonVoiceActivo" type="button">
+            Empezar
+           </button>
+          <button class="btn" style="display: flex;" (click)="stopService()" *ngIf="botonVoiceActivo" [disabled]="cargando" type="button">
+            <span *ngIf="cargando" >Cargando</span>
+            <span *ngIf="!cargando" >Enviar</span>
+            <mat-spinner *ngIf="cargando" style="width: 15px; height: 15px; color: #fff; display: flex;"></mat-spinner></button>
+        </div>
       </div>
     </div>
-  </div>
+  </form>
+
 
   
 

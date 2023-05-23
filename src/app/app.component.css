@@ -111,6 +111,11 @@ input {
     clear: both;
     display: table;
   }
+
+  input {
+    padding: 8px 10px;
+    margin-right: 10px;
+  }
   
   .container h5 {
     float: left;
